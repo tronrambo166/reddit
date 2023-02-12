@@ -197,6 +197,23 @@
                         @endif
                         <div class="d-flex justify-content-between">
                             <div class="post_comment mt-2">
+
+                                  <button class="comment_icon">
+                                     <a class="my-2 mr-3"  role="button" data-id="{{ $group->id}}" onclick="like({{$post->id}},{{$group->id}});">  <i class="far fa-heart" style="color:red;"></i>  </a>  
+
+                                        <button class="px-1 m-0 comment_icon">
+                                    <p id="likes{{$post->id}}"class=" border border-left d-inline bg-light">
+                                         @if(!isset($likes[0])) 0 @endif
+
+                                    @foreach($likes as $like)
+                                    @if($like->post_id == $post->id)
+                                     {{$like->likes}} @endif @endforeach
+                                    </p>
+
+                                        
+                                </button>
+
+
                                 <button class="comment_icon">
                                     <i class="far fa-comments"></i> <a class="my-2" href="javascripts:void(0)" role="button"
                                         data-bs-toggle="modal" data-bs-target="#modalComment{{$post->id}}"> comments </a>
@@ -469,7 +486,25 @@
 
 
 
+<script type="text/javascript">
+        function like(post_id,group_id){ 
+            var likes = document.getElementById('likes'+post_id).innerHTML; 
+            //alert(post_id+'//'+group_id);
+            $.ajax({
+                    type:  "GET",
+                    dataType: "json",
+                    url:'{{ route("post_like") }}',
+                    data:{'post_id': post_id, 'group_id': group_id},
+                    success: function(data){
+                       document.getElementById('likes'+post_id).innerHTML=(parseInt(likes)+1);
+                        notify('success','You like this post!')
+                        
+                }
 
+                });
+        }
+
+    </script>
 
 @endsection
 @push('script')

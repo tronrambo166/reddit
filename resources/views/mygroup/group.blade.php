@@ -198,7 +198,13 @@
                                      <a class="my-2 mr-3"  role="button" data-id="{{ $group->id}}" onclick="like({{$post->id}},{{$group->id}});">  <i class="far fa-heart" style="color:red;"></i>  </a>  
 
                                         <button class="px-1 m-0 comment_icon">
-                                    <p class=" border border-left d-inline bg-light">10</p>
+                                    <p id="likes{{$post->id}}" class=" border border-left d-inline bg-light">
+                                        @if(!isset($likes[0])) 0 @endif
+
+                                    @foreach($likes as $like)
+                                    @if($like->post_id == $post->id)
+                                     {{$like->likes}} @else 0 @endif @endforeach
+                                    </p>
 
                                         
                                 </button>
@@ -478,15 +484,15 @@
     {{-- MYGROUP END --}}
     <script type="text/javascript">
         function like(post_id,group_id){ 
-            //var group_id = $(this).data('id'); 
-            alert(post_id+'//'+group_id);
+            var likes = document.getElementById('likes'+post_id).innerHTML; 
+            //alert(post_id+'//'+group_id);
             $.ajax({
                     type:  "GET",
                     dataType: "json",
                     url:'{{ route("post_like") }}',
                     data:{'post_id': post_id, 'group_id': group_id},
                     success: function(data){
-                       
+                       document.getElementById('likes'+post_id).innerHTML=(parseInt(likes)+1);
                         notify('success','You like this post!')
                         
                 }

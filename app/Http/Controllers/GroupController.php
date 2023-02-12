@@ -10,6 +10,7 @@ use App\Rules\FileTypeValidate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use DB;
 
 class GroupController extends Controller
 {
@@ -67,7 +68,9 @@ class GroupController extends Controller
         $followers = GroupFollow::where('group_id',$group->id)->where('user_id',$user->id)->first();
         $groupPosts = GroupPost::where('group_id',$group->id)->orderBy('id',"DESC")->get();
 
-      return view('mygroup.group',compact('user','group','relatedGroups','rules','followers','groupPosts'));
+         $likes = DB::table('post_likes')->where('group_id',$group->id)->orderBy('id',"DESC")->get();
+
+      return view('mygroup.group',compact('user','group','relatedGroups','rules','followers','groupPosts','likes'));
     }
     public function RelatedCommunity($id,$slug){
         $user = auth()->user();
@@ -77,7 +80,9 @@ class GroupController extends Controller
         $followers = GroupFollow::where('group_id',$group->id)->where('user_id',$user->id)->first();
         $groupPosts = GroupPost::where('group_id',$group->id)->orderBy('id',"DESC")->get();
 
-      return view('relered.group',compact('user','group','relatedGroups','rules','followers','groupPosts'));
+        $likes = DB::table('post_likes')->where('group_id',$group->id)->orderBy('id',"DESC")->get();
+
+      return view('relered.group',compact('user','group','relatedGroups','rules','followers','groupPosts','likes'));
     }
     public function onOff(Request $request){
         $on = Group::find($request->group_id);
